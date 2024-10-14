@@ -1,0 +1,21 @@
+<h2>Translator</h2>
+<button id="translate">Translate</button>
+<script>
+
+// document.getElementById('create').onclick = () => {
+//   const textbox = document.getElementById('count');
+//   const count = parseInt(textbox.value, 10);
+//   parent.postMessage({ pluginMessage: { type: 'create-shapes', count } }, '*')
+// }
+
+
+document.getElementById('translate').onclick = () => {
+  parent.postMessage({ pluginMessage: { type: 'translate' } }, '*')
+}
+
+
+// document.getElementById('cancel').onclick = () => {
+//   parent.postMessage({ pluginMessage: { type: 'cancel' } }, '*')
+// }
+
+</script>

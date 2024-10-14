@@ -1,0 +1,21 @@
+{
+  "name": "translator",
+  "id": "1426146883679672925",
+  "api": "1.0.0",
+  "main": "code.js",
+  "capabilities": [],
+  "enableProposedApi": false,
+  "documentAccess": "dynamic-page",
+  "editorType": [
+    "figma"
+  ],
+  "ui": "ui.html",
+  "networkAccess": {
+    "devAllowedDomains": [
+      "http://localhost:8080"
+    ],
+    "allowedDomains": [
+      "none"
+    ]
+  }
+}
