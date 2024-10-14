@@ -16,17 +16,6 @@ var deepLAPIKey = ""
 
 const deepLAPIURL = "https://api-free.deepl.com/v2/translate"
 
-type TranslationRequest struct {
-	TargetLanguageCode string `json:"target_language_code"`
-	Text               string `json:"text"`
-}
-
-type TranslationResponse struct {
-	Translations []struct {
-		Text string `json:"text"`
-	} `json:"translations"`
-}
-
 func translateHandler(w http.ResponseWriter, r *http.Request) {
 	var req TranslationRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {

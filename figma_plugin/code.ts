@@ -14,7 +14,8 @@ async function translateText(text: string): Promise<string> {
   try {
     
     const bodyString = JSON.stringify({
-      "text": text
+      "text": text,
+      "target_language_code": "es"
     });
 
     console.log(bodyString);
@@ -85,6 +86,7 @@ figma.ui.onmessage = async (msg: {type: string, count: number}) => {
   }
 
   if (msg.type === 'translate') {
+    await figma.loadFontAsync({ family: "Inter", style: "Regular" })
     await figma.loadFontAsync({ family: "Roboto", style: "Regular" });
     await figma.loadFontAsync({ family: "Roboto", style: "Bold" });
     await figma.loadFontAsync({ family: "Roboto", style: "Italic" });
