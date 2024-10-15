@@ -9,8 +9,6 @@ async function translateText(serverURL: string, text: string, target_lang_code: 
       "target_language_code": target_lang_code
     });
 
-    console.log(bodyString);
-
     const response = await fetch(serverURL, {
       method: 'POST',
       headers: {
