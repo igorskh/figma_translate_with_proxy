@@ -1,7 +1,46 @@
-<h2>Translator</h2>
+<style>
+  body{
+    font-family: sans-serif;
+  }
+  p{
+    color: #777777;
+  }
 
+  label{
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom:10px;
+    width: 75%;
+    font-weight: 400;
+  }
+
+  input{
+    font-size: 14px;
+    margin-top: 3px;
+    border-style: none;
+    border-bottom-style: solid;
+    outline: none;
+    width: 100%;
+  }
+
+  select {
+    width: 100%;
+  }
+
+  button{
+    margin-top: 20px;
+    padding: 10px;
+  }
+</style>
+
+<h2>Translate with proxy</h2>
+
+<label for="server_url">Server URL</label>
 <input type="text" id="server_url" name="server_url" value="http://localhost:8080/translate">
 <br/>
+
+<label for="target_lang">Target language</label>
 <select id="target_lang" name="target_lang" value="EN">
   <option value="EN">English</option>
   <option value="ES">Spanish</option>
