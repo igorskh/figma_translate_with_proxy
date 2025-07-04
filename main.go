@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -20,12 +21,22 @@ func translateHandler(w http.ResponseWriter, r *http.Request) {
 	var req TranslationRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		log.Println("Invalid request payload: " + err.Error())
+		// write error text in response
+		w.Write([]byte("Invalid request payload: " + err.Error()))
+
 		return
+	}
+
+	if req.RequestDelay > 0 {
+		time.Sleep(time.Duration(req.RequestDelay) * time.Millisecond)
 	}
 
 	translatedText, err := translateText(req.Text, req.TargetLanguageCode)
 	if err != nil {
 		http.Error(w, "Failed to translate text", http.StatusInternalServerError)
+		log.Println("Failed to translate text: " + err.Error())
+		w.Write([]byte("Failed to translate text: " + err.Error()))
 		return
 	}
 
@@ -47,8 +58,13 @@ func translateText(text string, targetLanguageCode string) (string, error) {
 		return "", err
 	}
 
+	if len(body) == 0 {
+		return "", fmt.Errorf("empty response from DeepL API")
+	}
+
 	var translationResp TranslationResponse
 	if err := json.Unmarshal(body, &translationResp); err != nil {
+		log.Println("Error unmarshalling response body:", string(body))
 		return "", err
 	}
 

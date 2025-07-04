@@ -4,11 +4,12 @@ figma.ui.resize(400, 400);
 
 const loadedFonts: string[] = [];
 
-async function translateText(serverURL: string, text: string, target_lang_code: string): Promise<string> {
+async function translateText(serverURL: string, text: string, target_lang_code: string, requestDelay: number): Promise<string> {
   try {
     const bodyString = JSON.stringify({
       "text": text,
-      "target_language_code": target_lang_code
+      "target_language_code": target_lang_code,
+      "request_delay": requestDelay
     });
 
     const response = await fetch(serverURL, {
@@ -20,8 +21,7 @@ async function translateText(serverURL: string, text: string, target_lang_code: 
     });
 
     if (!response.ok) {
-      console.error(`HTTP error! status: ${response.status}`);
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`HTTP error! status: ${response.status}, error: ${await response.text()}`);
     }
     
     const data = await response.json();
@@ -52,7 +52,7 @@ function findAllTextNodesOnSceneNodes(sceneNode: readonly SceneNode[]): TextNode
   return textNodes;
 }
 
-figma.ui.onmessage = async (msg: {serverURL: string, type: string, targetLangCode: string}) => {
+figma.ui.onmessage = async (msg: {serverURL: string, type: string, targetLangCode: string, requestDelay: number}) => {
   if (msg.type === 'translate') {
     const textNodes = findAllTextNodesOnSceneNodes(figma.currentPage.selection);
     const totalNodes = textNodes.length;
@@ -67,7 +67,7 @@ figma.ui.onmessage = async (msg: {serverURL: string, type: string, targetLangCod
         loadedFonts.push(fontKey);
       }
 
-      const translatedText = await translateText(msg.serverURL, node.characters, msg.targetLangCode);
+      const translatedText = await translateText(msg.serverURL, node.characters, msg.targetLangCode, msg.requestDelay);
       if (translatedText.length > 0) {
         node.characters = translatedText;
       }

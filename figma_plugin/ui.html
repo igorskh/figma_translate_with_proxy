@@ -85,6 +85,10 @@
 </select>
 <br/>
 
+<label for="request_delay">Delay between requests [ms]</label>
+<input type="number" id="request_delay" name="request_delay" value="0" min="0" max="10000" step="100">
+<p>Set to 0 for no delay.</p>
+
 <button id="translate">Translate</button>
 <br/>
 
@@ -94,8 +98,9 @@ Processed <span id="processed_count">0</span> of <span id="total_count">0</span>
   document.getElementById('translate').onclick = () => {
     const targetLangCode = document.getElementById('target_lang').value
     const serverURL = document.getElementById('server_url').value
+    const requestDelay = parseInt(document.getElementById('request_delay').value)
 
-    parent.postMessage({ pluginMessage: { type: 'translate', serverURL, targetLangCode } }, '*')
+    parent.postMessage({ pluginMessage: { type: 'translate', serverURL, targetLangCode, requestDelay } }, '*')
 
   }
 
