@@ -23,7 +23,7 @@ async function translateText(serverURL: string, text: string, target_lang_code: 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}, error: ${await response.text()}`);
     }
-    
+
     const data = await response.json();
     return data["translated_text"];
   } catch (error) {
@@ -52,7 +52,7 @@ function findAllTextNodesOnSceneNodes(sceneNode: readonly SceneNode[]): TextNode
   return textNodes;
 }
 
-figma.ui.onmessage = async (msg: {serverURL: string, type: string, targetLangCode: string, requestDelay: number}) => {
+figma.ui.onmessage = async (msg: { serverURL: string, type: string, targetLangCode: string, requestDelay: number }) => {
   if (msg.type === 'translate') {
     const textNodes = findAllTextNodesOnSceneNodes(figma.currentPage.selection);
     const totalNodes = textNodes.length;
@@ -60,16 +60,20 @@ figma.ui.onmessage = async (msg: {serverURL: string, type: string, targetLangCod
 
     textNodes.forEach(async (node) => {
       const font = (node.fontName as FontName);
-      const fontKey = `${font.family}_${font.style}`
-      
-      if (loadedFonts.indexOf(fontKey) == -1) {
-        await figma.loadFontAsync({ family: font.family, style: font.style });
-        loadedFonts.push(fontKey);
-      }
+      const fontKey = `${font.family}_${font.style}`;
 
-      const translatedText = await translateText(msg.serverURL, node.characters, msg.targetLangCode, msg.requestDelay);
-      if (translatedText.length > 0) {
-        node.characters = translatedText;
+      if (!font.family || !font.style) {
+        console.warn(`Skipping node with invalid font: ${node.id}, text: ${node.characters}`);
+      } else {
+        if (loadedFonts.indexOf(fontKey) == -1) {
+          await figma.loadFontAsync(font);
+          loadedFonts.push(fontKey);
+        }
+
+        const translatedText = await translateText(msg.serverURL, node.characters, msg.targetLangCode, msg.requestDelay);
+        if (translatedText.length > 0) {
+          node.characters = translatedText;
+        }
       }
       processedNodes += 1;
       figma.ui.postMessage({ type: 'progress', totalNodes, processedNodes });
