@@ -46,8 +46,12 @@ func translateHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func translateText(text string, targetLanguageCode string) (string, error) {
-	reqBody := fmt.Sprintf("auth_key=%s&text=%s&target_lang=%s", deepLAPIKey, text, targetLanguageCode)
-	resp, err := http.Post(deepLAPIURL, "application/x-www-form-urlencoded", strings.NewReader(reqBody))
+	reqBody := fmt.Sprintf("text=%s&target_lang=%s", text, targetLanguageCode)
+	req, _ := http.NewRequest("POST", deepLAPIURL, strings.NewReader(reqBody))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Set("Authorization", "DeepL-Auth-Key "+deepLAPIKey)
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return "", err
 	}
